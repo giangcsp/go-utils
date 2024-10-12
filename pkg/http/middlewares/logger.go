@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -25,20 +24,18 @@ func LoggerMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(lmw, r)
 
 		end := time.Now()
-		go func() {
-			latency := end.Sub(start)
-			if latency > time.Minute {
-				latency.Truncate(time.Second)
-			}
+		latency := end.Sub(start)
+		if latency > time.Minute {
+			latency.Truncate(time.Second)
+		}
 
-			slog.Info(fmt.Sprintf("%v |%3d| %13v | %15s | %s %s\n",
-				start.Format("2006/01/02 - 15:04:05"),
-				lmw.statusCode,
-				latency,
-				r.RemoteAddr,
-				r.Method,
-				r.URL.Path,
-			))
-		}()
+		slog.LogAttrs(r.Context(), slog.LevelInfo,
+			"Logger",
+			slog.Int("statusCode", lmw.statusCode),
+			slog.Duration("latency", latency),
+			slog.String("address", r.RemoteAddr),
+			slog.String("method", r.Method),
+			slog.String("path", r.URL.Path),
+		)
 	})
 }

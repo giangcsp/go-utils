@@ -8,8 +8,8 @@ type Middleware func(next http.Handler) http.Handler
 
 func WithMiddlewares(handler http.Handler, middlewares ...Middleware) http.Handler {
   h := handler
-  for _, m := range middlewares {
-    h = m(h)
+  for i := len(middlewares) - 1; i >= 0; i-- {
+    h = middlewares[i](h)
   }
 
   return h

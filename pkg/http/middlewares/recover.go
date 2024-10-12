@@ -26,7 +26,7 @@ func RecoverMiddleware(next http.Handler) http.Handler {
 
     defer func() {
       if re := recover(); re != nil {
-        slog.Warn("Recover from panic:", re)
+        slog.Warn("Recovered from panic:", "error", re)
         http.Error(w,
           http.StatusText(http.StatusInternalServerError),
           http.StatusInternalServerError,
