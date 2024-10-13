@@ -29,6 +29,7 @@ func main() {
         server, 
         middlewares.LoggerMiddleware, 
         middlewares.RecoverMiddleware,
+        middlewares.MakeCorsMiddleware(middlewares.DefaultCorsConfig),
       ),
     ),
   )
